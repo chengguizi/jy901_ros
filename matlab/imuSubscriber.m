@@ -3,10 +3,10 @@
 
 clear all;
 close all;
-rosshutdown;
+% rosshutdown;
 
 clc;
-rosinit;
+% rosinit('arena-glass.local');
 
 global h_imu_ax h_imu_ay h_imu_az;
 global h_imu_gx h_imu_gy h_imu_gz;
@@ -58,7 +58,9 @@ while true
     end
     reset = true;
 end
-rosshutdown;
+clear imu_sub;
+clear mag_sub;
+% rosshutdown;
 
 
 function imu_callback(src, msg)
@@ -96,8 +98,8 @@ function imu_callback(src, msg)
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % diverge towards the sign, too small the gravity
-        calib_scale = diag([1,1.003,1.012]);
-        calib_bias = [0.008 -0.012 0.01]';
+        calib_scale = diag([0.9997600830469345,1.001241647967386,1.013021354410268]);
+        calib_bias = [0 0 0]';
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         g_imu = rotm'*[0 0 9.8]';

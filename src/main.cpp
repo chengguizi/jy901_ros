@@ -24,6 +24,7 @@ struct Range{
     int accel;
     int gyro;
     const double g = 9.8;
+    const int k = 32768;
 }imu_range;
 
 struct Calib{
@@ -49,9 +50,9 @@ ros::Time getTime(const STime &time)
 bool apply_calibration;
 Calib imu_calib;
 void calibrate_imu(sensor_msgs::Imu &imu_msg){
-    imu_msg.linear_acceleration.x = imu_msg.linear_acceleration.x * imu_calib.scale[0] + imu_calib.bias[0];
-    imu_msg.linear_acceleration.y = imu_msg.linear_acceleration.y * imu_calib.scale[1] + imu_calib.bias[1];
-    imu_msg.linear_acceleration.z = imu_msg.linear_acceleration.z * imu_calib.scale[2] + imu_calib.bias[2];
+    imu_msg.linear_acceleration.x = imu_msg.linear_acceleration.x / imu_calib.scale[0];
+    imu_msg.linear_acceleration.y = imu_msg.linear_acceleration.y / imu_calib.scale[1];
+    imu_msg.linear_acceleration.z = imu_msg.linear_acceleration.z / imu_calib.scale[2];
 }
 
 sensor_msgs::Imu getImu(const SAcc &acc, const SGyro &gyro, const SQuater &quat)
@@ -166,8 +167,10 @@ int main (int argc, char** argv){
     spinner.start();
 
     //// Open Serial Port
-    const std::string port = "/dev/ttyUSB0";
-    const int baudrate = 230400;  // 115200 is not enough, almost 4ms to communicate, too long
+    std::string port;
+    ROS_ASSERT(local_nh.getParam("port", port));
+    int baudrate;  // 115200 is not enough, almost 4ms to communicate, too long
+    ROS_ASSERT(local_nh.getParam("baudrate", baudrate));
     auto timeout = serial::Timeout(1,1); // both inter_byte_timeout and read_timeout_constant
     serial::Serial serial(port, baudrate, timeout);
 
@@ -193,16 +196,18 @@ int main (int argc, char** argv){
 
     while(ros::ok()){
         static int last_seq = 0;
-        if(serial.available()){
-            unsigned int len;
-            try {
-            len = serial.read(buffer,160);
+        try {
+            if(serial.available()){
+                unsigned int len;
+                
+                len = serial.read(buffer,160);
+                
+                jy901.CopeSerialData(buffer,len);
             }
-            catch (const std::exception& e){
-                std::cout << "Exception:" << e.what() << std::endl;
-                exit(-1);
-            }
-            jy901.CopeSerialData(buffer,len);
+        }
+        catch (const std::exception& e){
+            std::cout << "Catch Exception: " << e.what() << std::endl;
+            exit(-1);
         }
 
         if (last_seq != jy901.data.seq){

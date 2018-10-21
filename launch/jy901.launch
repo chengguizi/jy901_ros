@@ -1,8 +1,10 @@
 <launch>
     <node pkg="jy901_ros" type="imu" name="imu" output="screen">
+    <param name="port" type="str" value="/dev/ttyUSB0" />
+    <param name="baudrate" type="int" value="230400" />
     <param name="accel_range" type="int" value="4" />
     <param name="gyro_range" type="int" value="1000" />
     <param name="apply_calibration" type="bool" value="false" />
-    <param name="imu_calib_file" type="str" value="/home/dhl/.ros/imu_calib-2018-10-19-10-47-10.yaml" />
+    <param name="imu_calib_file" type="str" value="/home/upsquared/.ros/imu_calib-2018-10-21-12-45-19.yaml" />
     </node>
 </launch>

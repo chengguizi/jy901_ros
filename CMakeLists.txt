@@ -20,7 +20,7 @@ find_package(yaml-cpp REQUIRED)
 find_package(catkin REQUIRED COMPONENTS 
   roscpp
   std_msgs
-  serial
+  serial # requires ros-kinetic-serial pacakge
 )
 
 catkin_package(
@@ -35,8 +35,8 @@ add_executable(imu
   src/jy901.cpp
 )
 
-add_executable(offline_calibration 
-  src/offline_calibration.cpp
+add_executable(calibration 
+  src/calibration.cpp
 )
 
 
@@ -47,8 +47,9 @@ target_include_directories(imu
     ${catkin_INCLUDE_DIRS}
 ) # to find ros/ros.h
 
-target_include_directories(offline_calibration
+target_include_directories(calibration
   PRIVATE
+    include
     ${YAML_CPP_INCLUDE_DIR}
     ${catkin_INCLUDE_DIRS}
 ) # to find ros/ros.h
@@ -59,7 +60,7 @@ target_link_libraries(imu
     ${YAML_CPP_LIBRARIES}
 )
 
-target_link_libraries(offline_calibration
+target_link_libraries(calibration
   PRIVATE
     ${catkin_LIBRARIES}
     ${YAML_CPP_LIBRARIES}

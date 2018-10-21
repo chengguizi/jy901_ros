@@ -21,7 +21,7 @@ function naiveIntegrate(accel, gyro, quat, t, delta_t, g_scaled)
         subplot(1,2,1);
         h_pxy = animatedline('Color','r','MaximumNumPoints',1000, 'Marker', '+');
         axis equal
-        axis([-10,10,-10,10]);
+        axis([-5,5,-5,5]);
         title('Naive Method: Position XY');
         legend('Position XY');
         
@@ -43,8 +43,8 @@ function naiveIntegrate(accel, gyro, quat, t, delta_t, g_scaled)
     R = quat2rotm(quat);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    calib_scale = diag([1.00,1.00,1.015]);
-    calib_bias = [-0.02178 0.0575995 -0.025526]';
+%     calib_scale = diag([0.9997600830469345,1.00,1.015]);
+%     calib_bias = [-0.02178 0.0575995 -0.025526]';
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     gravity = [0 0 norm(g_scaled)]';
