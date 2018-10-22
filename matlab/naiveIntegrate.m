@@ -1,4 +1,4 @@
-function naiveIntegrate(accel, gyro, quat, t, delta_t, g_scaled)
+function naiveIntegrate(accel_world, t, delta_t)
 % quat is the rotation of imu frame in the world frame
     persistent velocity position;
     persistent f_naive_v f_naive_p h_vx h_vy h_vz h_pxy h_pz;
@@ -21,7 +21,7 @@ function naiveIntegrate(accel, gyro, quat, t, delta_t, g_scaled)
         subplot(1,2,1);
         h_pxy = animatedline('Color','r','MaximumNumPoints',1000, 'Marker', '+');
         axis equal
-        axis([-5,5,-5,5]);
+        axis([-2,2,-2,2]);
         title('Naive Method: Position XY');
         legend('Position XY');
         
@@ -40,27 +40,7 @@ function naiveIntegrate(accel, gyro, quat, t, delta_t, g_scaled)
         clearpoints(h_pz);
     end
     
-    R = quat2rotm(quat);
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     calib_scale = diag([0.9997600830469345,1.00,1.015]);
-%     calib_bias = [-0.02178 0.0575995 -0.025526]';
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    gravity = [0 0 norm(g_scaled)]';
-%     gravity = [0,0,9.8]';
-%     gravity = g_scaled
-    disp('use gravity:')
-    disp(gravity)
-%     disp('accel reading in world - direct')
-    % this shows that accel should NOT be applied with bias and scale
-    % correction, this is because the EKF in the IMU uses the biased and
-    % scaled readings anyway, so the R encodes that
-%     disp([R*accel R* inv(calib_scale)*(accel)] )
-    accel_world = R*accel - gravity
-%     accel_world = R* inv(calib_scale)*(accel)  - gravity
-    % reduce scale effect
-%     accel_world = R*calib_scale*R'*accel_world
     
     position = position + velocity*delta_t + 0.5*accel_world*delta_t*delta_t;
     velocity = velocity*0.99 + accel_world*delta_t;
