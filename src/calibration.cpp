@@ -91,7 +91,7 @@ int main (int argc, char** argv){
     ROS_ASSERT(local_nh.getParam("gyro_range", imu_range.gyro));
 
     
-     _imu_sub = nh.subscribe("/imu0", 5, &imuCallback);
+    _imu_sub = nh.subscribe("/imu0", 5, &imuCallback);
     ros::AsyncSpinner spinner(2); 
     spinner.start();
 

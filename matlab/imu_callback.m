@@ -28,9 +28,9 @@ function imu_callback(src, msg)
     addpoints(h_imu_ay,t,msg.LinearAcceleration.Y);
     addpoints(h_imu_az,t,msg.LinearAcceleration.Z);
     
-    addpoints(h_imu_gx,t,msg.AngularVelocity.X);
-    addpoints(h_imu_gy,t,msg.AngularVelocity.Y);
-    addpoints(h_imu_gz,t,msg.AngularVelocity.Z);
+%     addpoints(h_imu_gx,t,msg.AngularVelocity.X);
+%     addpoints(h_imu_gy,t,msg.AngularVelocity.Y);
+%     addpoints(h_imu_gz,t,msg.AngularVelocity.Z);
 %     
 %     accel_world = [ msg.LinearAcceleration.X msg.LinearAcceleration.Y msg.LinearAcceleration.Z]';
 %     

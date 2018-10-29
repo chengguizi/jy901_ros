@@ -10,7 +10,7 @@ clear odometry_sub;
 clear reset_pub;
 
 clc;
-% rosinit('arena-glass.local');
+% rosinit('arena-glass.local','NodeHost','192.168.2.10')
 
 global reset;
 
@@ -25,24 +25,27 @@ global h_imu_gx h_imu_gy h_imu_gz;
 
 f1 = figure();
 % Configure accerlation raw plot
-subplot(1,2,1);
+% subplot(1,2,1);
 h_imu_ax = animatedline('Color','r','MaximumNumPoints',60);
 h_imu_ay = animatedline('Color','g','MaximumNumPoints',60);
 h_imu_az = animatedline('Color','b','MaximumNumPoints',60);
 axis tight
 axis([-inf,inf,-4,4]);
-title('Accelerometer Raw Data');
+title('Accelerometer in World');
+
+grid on
 legend('ax','ay','az');
 
 % Configure gyroscope raw plot
-subplot(1,2,2);
-h_imu_gx = animatedline('Color','r','MaximumNumPoints',60);
-h_imu_gy = animatedline('Color','g','MaximumNumPoints',60);
-h_imu_gz = animatedline('Color','b','MaximumNumPoints',60);
-axis tight
-axis([-inf,inf,-10,10]);
-title('Gyroscope Raw Data');
-legend('gx','gy','gz');
+% subplot(1,2,2);
+% h_imu_gx = animatedline('Color','r','MaximumNumPoints',60);
+% h_imu_gy = animatedline('Color','g','MaximumNumPoints',60);
+% h_imu_gz = animatedline('Color','b','MaximumNumPoints',60);
+% axis tight
+% axis([-inf,inf,-10,10]);
+% title('Gyroscope Raw Data');
+% grid on
+% legend('gx','gy','gz');
 
 
 
@@ -56,7 +59,8 @@ h_vy = animatedline('Color','g','MaximumNumPoints',60);
 h_vz = animatedline('Color','b','MaximumNumPoints',60);
 axis tight
 axis([-inf,inf,-3,3]);
-title('Naive Method: Velocity');
+title('Naive Method: ');
+grid on
 legend('vx','vy','vz');
 
 % Figure for position
@@ -66,6 +70,7 @@ h_pxy = animatedline('Color','r','MaximumNumPoints',1000, 'Marker', '+');
 axis equal
 axis([-2,2,-2,2]);
 title('Naive Method: Position XY');
+grid on
 legend('Position XY');
 
 subplot(1,2,2);
@@ -73,6 +78,7 @@ h_pz = animatedline('Color','r','MaximumNumPoints',60);
 axis tight
 axis([-inf,inf,-10,10]);
 title('Naive Method: Position Z');
+grid on
 legend('Position Z');
         
         
@@ -97,6 +103,14 @@ while true
     msg.Stamp = rostime('now','system');
     send(reset_pub,msg);
     reset = true;
+    clearpoints(h_pxy);
+    clearpoints(h_pz);
+    clearpoints(h_vx);
+    clearpoints(h_vy);
+    clearpoints(h_vz);
+    clearpoints(h_imu_ax);
+    clearpoints(h_imu_ay);
+    clearpoints(h_imu_az);
 end
 clear imu_sub;
 clear odometry_sub;

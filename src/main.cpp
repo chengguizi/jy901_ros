@@ -190,19 +190,24 @@ int main (int argc, char** argv){
     CJY901 jy901;
     ros::Rate loop_rate(400);
     serial.flush();
-    unsigned char buffer[160];
-    serial.read(buffer,160); // just to make things stable, in latency
+    unsigned char buffer[1024];
+    serial.read(buffer,128); // just to make things stable, in latency
 
 
     while(ros::ok()){
         static int last_seq = 0;
         try {
-            if(serial.available()){
+            while(serial.available()){
                 unsigned int len;
                 
-                len = serial.read(buffer,160);
+                len = serial.read(buffer,1024);
                 
                 jy901.CopeSerialData(buffer,len);
+
+                if (last_seq != jy901.data.seq){
+                    last_seq = jy901.data.seq;
+                    rosPublish(jy901.data);
+                }
             }
         }
         catch (const std::exception& e){
@@ -210,10 +215,7 @@ int main (int argc, char** argv){
             exit(-1);
         }
 
-        if (last_seq != jy901.data.seq){
-            last_seq = jy901.data.seq;
-            rosPublish(jy901.data);
-        }
+        
         loop_rate.sleep();
     }
 

@@ -18,7 +18,7 @@
 
 void CJY901::CopeSerialData(const unsigned char ucData[], unsigned int ucLength)
 {
-	static unsigned char ucRxBuffer[250];
+	static unsigned char ucRxBuffer[2048];
 	static int ucRxCnt = 0;
     static bool initialised = false;
 
